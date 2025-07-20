@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Gabon Service - Accueil{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <h2 class="fw-bold text-primary mb-3">GABON SERVICE</h2>
+    <p class="text-end pe-3">
+        <a href="/register" class="text-success text-decoration-none">S’inscrire</a> |
+        <a href="/login" class="text-dark text-decoration-none">Se connecter</a>
+    </p>
+
+    <h1 class="display-5 fw-bold mb-3">Trouvez un prestataire de service en quelques clics</h1>
+    <p class="lead mb-4">Gabon Service vous met en relation avec des travailleurs pour divers services.</p>
+
+    <div class="d-flex justify-content-center gap-3 mb-4">
+        <a href="/requester/register" class="btn btn-success btn-lg">Demander un service</a>
+        <a href="/worker/register" class="btn btn-outline-success btn-lg">Devenir prestataire</a>
+    </div>
+
+    <img src="https://via.placeholder.com/400x250.png?text=Service+Image" class="img-fluid rounded shadow" alt="Illustration de service">
+</div>
+{% endblock %}

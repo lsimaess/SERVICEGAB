@@ -1,25 +1,26 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 
 db = SQLAlchemy()
-login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'changeme'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///servicehub.db'
+    app.config.from_pyfile('../config.py')
 
     db.init_app(app)
-    login_manager.init_app(app)
-    @login_manager.user_loader
 
-    def load_user(user_id):
+    # Import all models so Flask-Migrate or db.create_all can see them
+    from app import models  # <-- this makes sure all models are registered
 
-        return None
+    # Register blueprints
+    from app.admin.routes import admin_bp
+    from app.worker.routes import worker_bp
+    from app.requester.routes import requester_bp
+    from app.main.routes import main_bp
 
-
-    from .routes import main
-    app.register_blueprint(main)
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(worker_bp)
+    app.register_blueprint(requester_bp)
+    app.register_blueprint(main_bp)
 
     return app
