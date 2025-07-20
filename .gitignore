@@ -1,6 +1,23 @@
-venv/
+# Byte-compiled / cache
 __pycache__/
-instance/
-*.pyc
+*.py[cod]
+
+# Environment
+venv/
 .env
-config.py
+*.sqlite3
+instance/
+*.db
+
+# System
+.DS_Store
+*.log
+
+# Flask/Python
+*.pyo
+*.pyd
+*.so
+
+# IDE
+.vscode/
+.idea/
