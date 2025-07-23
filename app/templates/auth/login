@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Se connecter{% endblock %}
+
+{% block content %}
+<style>
+  .login-card {
+    max-width: 420px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+  .login-card h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+  }
+  .form-control {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  }
+  .btn-login {
+    width: 100%;
+    padding: 0.7rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+  .link-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  .link-buttons a {
+    text-decoration: none;
+    color: #28a745;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  .link-buttons a:hover {
+    color: #1e7e34;
+  }
+  .register-links {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  .register-links a {
+    margin: 0 1rem;
+    font-weight: 600;
+    color: #007bff;
+    text-decoration: none;
+  }
+  .register-links a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="login-card">
+  <h2>Connexion</h2>
+
+  <form method="POST" action="{{ url_for('auth.login') }}">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {{ form.email.label(class="form-label") }}
+      {{ form.email(class="form-control", placeholder="Votre adresse email") }}
+      {% if form.email.errors %}
+        <div class="text-danger">{{ form.email.errors[0] }}</div>
+      {% endif %}
+    </div>
+
+    <div class="mb-3">
+      {{ form.password.label(class="form-label") }}
+      {{ form.password(class="form-control", placeholder="Votre mot de passe") }}
+      {% if form.password.errors %}
+        <div class="text-danger">{{ form.password.errors[0] }}</div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-success btn-login">Se connecter</button>
+
+    <div class="link-buttons">
+      <a href="{{ url_for('auth.forgot_password') }}">Mot de passe oublié ?</a>
+      <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
+    </div>
+  </form>
+
+  <div class="register-links">
+    <p>Pas encore de compte ?</p>
+    <a href="{{ url_for('auth.register_worker') }}" class="btn btn-outline-primary btn-sm">S’inscrire comme Prestataire</a>
+    <a href="{{ url_for('auth.register_requester') }}" class="btn btn-outline-secondary btn-sm">S’inscrire comme Demandeur</a>
+  </div>
+</div>
+
+{% endblock %}

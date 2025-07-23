@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Inscription{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Créer un compte</h2>
+
+  <div class="d-flex justify-content-center mb-4">
+    <button type="button" class="btn btn-outline-success me-2" onclick="showForm('worker')">Prestataire</button>
+    <button type="button" class="btn btn-outline-primary" onclick="showForm('requester')">Demandeur</button>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data">
+    {{ user_cred_form.hidden_tag() }}
+    {{ worker_form.hidden_tag() }}
+    {{ requester_form.hidden_tag() }}
+
+    <!-- User Credentials (always visible) -->
+    <h4>Informations de connexion</h4>
+    <div class="mb-3">
+      {{ user_cred_form.username.label }} {{ user_cred_form.username(class="form-control") }}
+      {% if user_cred_form.username.errors %}
+        <div class="text-danger">{{ user_cred_form.username.errors[0] }}</div>
+      {% endif %}
+    </div>
+    <div class="mb-3">
+      {{ user_cred_form.email.label }} {{ user_cred_form.email(class="form-control") }}
+      {% if user_cred_form.email.errors %}
+        <div class="text-danger">{{ user_cred_form.email.errors[0] }}</div>
+      {% endif %}
+    </div>
+    <div class="mb-3">
+      {{ user_cred_form.password.label }} {{ user_cred_form.password(class="form-control") }}
+      {% if user_cred_form.password.errors %}
+        <div class="text-danger">{{ user_cred_form.password.errors[0] }}</div>
+      {% endif %}
+    </div>
+    <div class="mb-3">
+      {{ user_cred_form.confirm_password.label }} {{ user_cred_form.confirm_password(class="form-control") }}
+      {% if user_cred_form.confirm_password.errors %}
+        <div class="text-danger">{{ user_cred_form.confirm_password.errors[0] }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Profile forms toggled -->
+    <div id="worker-profile" style="display:none;">
+      <h4>Profil Prestataire</h4>
+      <div class="mb-3">
+        {{ worker_form.first_name.label }} {{ worker_form.first_name(class="form-control") }}
+        {% if worker_form.first_name.errors %}
+          <div class="text-danger">{{ worker_form.first_name.errors[0] }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        {{ worker_form.last_name.label }} {{ worker_form.last_name(class="form-control") }}
+      </div>
+      <div class="mb-3">
+        {{ worker_form.email.label }} {{ worker_form.email(class="form-control") }}
+      </div>
+      <div class="mb-3">
+        {{ worker_form.phone.label }} {{ worker_form.phone(class="form-control") }}
+      </div>
+      <!-- Add all other worker fields similarly -->
+      <button type="submit" name="submit_worker" class="btn btn-success mt-3">S’inscrire comme Prestataire</button>
+    </div>
+
+    <div id="requester-profile" style="display:none;">
+      <h4>Profil Demandeur</h4>
+      <div class="mb-3">
+        {{ requester_form.first_name.label }} {{ requester_form.first_name(class="form-control") }}
+      </div>
+      <div class="mb-3">
+        {{ requester_form.last_name.label }} {{ requester_form.last_name(class="form-control") }}
+      </div>
+      <div class="mb-3">
+        {{ requester_form.email.label }} {{ requester_form.email(class="form-control") }}
+      </div>
+      <div class="mb-3">
+        {{ requester_form.phone.label }} {{ requester_form.phone(class="form-control") }}
+      </div>
+      <!-- Add other requester fields -->
+      <button type="submit" name="submit_requester" class="btn btn-primary mt-3">S’inscrire comme Demandeur</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function showForm(role) {
+    document.getElementById('worker-profile').style.display = role === 'worker' ? 'block' : 'none';
+    document.getElementById('requester-profile').style.display = role === 'requester' ? 'block' : 'none';
+  }
+
+  window.onload = function() {
+    showForm('worker');
+  };
+</script>
+{% endblock %}

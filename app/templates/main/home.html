@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil - ServiceHub{% endblock %}
+
+{% block content %}
+<style>
+  .hero {
+    background-color: #f9f9f9;
+    padding: 80px 20px;
+    text-align: center;
+    border-bottom: 4px solid #00b075;
+    border-radius: 16px;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 10px;
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 30px;
+  }
+
+  .search-bar {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    display: flex;
+    border-radius: 40px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .search-bar input {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+  }
+
+  .search-bar button {
+    background-color: #00b075;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .cta-buttons a {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.3s ease;
+  }
+
+  .cta-buttons a:nth-child(1) {
+    background-color: #00b075; /* Prestataire - green */
+    color: white;
+  }
+
+  .cta-buttons a:nth-child(1):hover {
+    background-color: #00905f;
+  }
+
+  .cta-buttons a:nth-child(2) {
+    background-color: #f4b400; /* Demandeur - yellow */
+    color: #1a1a1a;
+  }
+
+  .cta-buttons a:nth-child(2):hover {
+    background-color: #e0a200;
+  }
+
+  .cta-buttons a:nth-child(3) {
+    background-color: #1e90ff; /* Login - blue */
+    color: white;
+  }
+
+  .cta-buttons a:nth-child(3):hover {
+    background-color: #187bcd;
+  }
+
+  .section {
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #00b075;
+  }
+
+  .service-grid, .testimonials {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .service-card, .testimonial-card {
+    width: 250px;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    text-align: center;
+  }
+
+  .how-it-works {
+    background-color: #fefae0;
+    padding: 60px 20px;
+    border-radius: 16px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.04);
+    text-align: center;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding: 20px 0;
+    font-size: 0.9rem;
+    color: #333;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2rem;
+    }
+
+    .search-bar {
+      flex-direction: column;
+    }
+
+    .search-bar input, .search-bar button {
+      width: 100%;
+      border-radius: 0;
+    }
+
+    .cta-buttons a {
+      width: 100%;
+      text-align: center;
+    }
+
+    .service-card, .testimonial-card {
+      width: 90%;
+    }
+  }
+</style>
+
+<div class="hero">
+  <h1>Trouvez de l'aide de confiance pour vos services à Libreville</h1>
+  <p>Des prestataires disponibles rapidement pour vos besoins à domicile</p>
+
+  <div class="search-bar">
+    <input type="text" placeholder="Avec quoi avez-vous besoin d'aide ?">
+    <button>Rechercher</button>
+  </div>
+
+  <div class="cta-buttons">
+    <a href="{{ url_for('auth.register_worker') }}">Prestataire</a>
+    <a href="{{ url_for('auth.register_requester') }}">Demandeur</a>
+    <a href="{{ url_for('auth.login') }}">Se connecter</a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Services populaires</div>
+  <div class="service-grid">
+    <div class="service-card">Montage de meubles</div>
+    <div class="service-card">Nettoyage</div>
+    <div class="service-card">Jardinage</div>
+    <div class="service-card">Peinture</div>
+    <div class="service-card">Déménagement</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Témoignages</div>
+  <div class="testimonials">
+    <div class="testimonial-card">
+      “Service rapide et fiable. Je recommande!” <br><strong>- Marie L.</strong>
+    </div>
+    <div class="testimonial-card">
+      “Le prestataire était ponctuel et très professionnel.” <br><strong>- Jean B.</strong>
+    </div>
+  </div>
+</div>
+
+<div class="section how-it-works">
+  <div class="section-title">Comment ça marche</div>
+  <p>1. Créez un compte en quelques clics</p>
+  <p>2. Sélectionnez un service</p>
+  <p>3. Réservez et payez une fois le service réalisé</p>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="#">À propos</a>
+    <a href="#">Conditions</a>
+    <a href="#">Confidentialité</a>
+    <a href="#">Contact</a>
+    <a href="#">Facebook</a>
+  </div>
+</footer>
+{% endblock %}

@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% block title %}Inscription Travailleur{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #e6f4ec;
+  }
+
+  .register-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 8px 20px rgba(0, 128, 0, 0.1);
+    border: 1px solid #cce5d3;
+  }
+
+  h2 {
+    color: #007b4e;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .form-control, .form-select {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    border: 1px solid #ccc;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.15rem rgba(40, 167, 69, 0.25);
+  }
+
+  textarea.form-control {
+    height: 120px;
+  }
+
+  .btn-submit {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    padding: 0.9rem;
+    width: 100%;
+    border: none;
+  }
+
+  .btn-submit:hover {
+    background-color: #218838;
+  }
+
+  .form-row {
+    margin-bottom: 1.5rem;
+  }
+
+  .text-danger {
+    font-size: 0.9rem;
+  }
+
+  .links {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+</style>
+
+<div class="register-card">
+  <h2>Inscription Prestataire</h2>
+
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('auth.register_worker') }}">
+    {{ user_cred_form.hidden_tag() }}
+    {{ worker_form.hidden_tag() }}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="row">
+      <div class="col-md-6 form-row">
+        {{ user_cred_form.username.label }}
+        {{ user_cred_form.username(class="form-control") }}
+        {% for err in user_cred_form.username.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6 form-row">
+        {{ user_cred_form.email.label }}
+        {{ user_cred_form.email(class="form-control") }}
+        {% for err in user_cred_form.email.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6 form-row">
+        {{ user_cred_form.password.label }}
+        {{ user_cred_form.password(class="form-control") }}
+        {% for err in user_cred_form.password.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6 form-row">
+        {{ user_cred_form.confirm_password.label }}
+        {{ user_cred_form.confirm_password(class="form-control") }}
+        {% for err in user_cred_form.confirm_password.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ worker_form.first_name.label }}
+        {{ worker_form.first_name(class="form-control") }}
+        {% for err in worker_form.first_name.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6 form-row">
+        {{ worker_form.last_name.label }}
+        {{ worker_form.last_name(class="form-control") }}
+        {% for err in worker_form.last_name.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ worker_form.phone.label }}
+        {{ worker_form.phone(class="form-control") }}
+        {% for err in worker_form.phone.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6 form-row">
+        {{ worker_form.quartier.label }}
+        {{ worker_form.quartier(class="form-select") }}
+        {% for err in worker_form.quartier.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ worker_form.city.label }}
+        {{ worker_form.city(class="form-control") }}
+        {% for err in worker_form.city.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ worker_form.job_primary_id.label }}
+        <select name="job_primary_id" class="form-select">
+          <option value="">Sélectionnez</option>
+          <option value="1">Tonte de gazon</option>
+          <option value="2">Nettoyage</option>
+          <option value="3">Peinture</option>
+          <option value="4">Électricien</option>
+          <option value="5">Sécurité domestique</option>
+        </select>
+        {% for err in worker_form.job_primary_id.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ worker_form.job_secondary_id.label }}
+        <select name="job_secondary_id" class="form-select">
+          <option value="">Sélectionnez</option>
+          <option value="1">Tonte de gazon</option>
+          <option value="2">Nettoyage</option>
+          <option value="3">Peinture</option>
+          <option value="4">Électricien</option>
+          <option value="5">Sécurité domestique</option>
+        </select>
+        {% for err in worker_form.job_secondary_id.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ worker_form.experience_years.label }}
+        {{ worker_form.experience_years(class="form-control") }}
+        {% for err in worker_form.experience_years.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ worker_form.salary_per_job.label }}
+        <div class="input-group">
+          {{ worker_form.salary_per_job(class="form-control") }}
+          <span class="input-group-text">FCFA</span>
+        </div>
+        {% for err in worker_form.salary_per_job.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 form-row">
+        {{ worker_form.bio.label }}
+        {{ worker_form.bio(class="form-control") }}
+        {% for err in worker_form.bio.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ worker_form.profile_picture.label }}
+        {{ worker_form.profile_picture(class="form-control") }}
+        {% for err in worker_form.profile_picture.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ worker_form.id_document.label }}
+        {{ worker_form.id_document(class="form-control") }}
+        {% for err in worker_form.id_document.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 form-row">
+        {{ worker_form.source.label }}
+        {{ worker_form.source(class="form-select") }}
+        {% for err in worker_form.source.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn-submit">S’inscrire</button>
+    </div>
+  </form>
+
+  <div class="links mt-4">
+    <p>Déjà inscrit ? <a href="{{ url_for('auth.login') }}">Se connecter</a></p>
+    <p>Vous êtes demandeur ? <a href="{{ url_for('auth.register_requester') }}">Inscription Demandeur</a></p>
+  </div>
+</div>
+{% endblock %}

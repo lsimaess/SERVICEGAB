@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Se connecter{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #f4fff7;
+  }
+
+  .login-card {
+    max-width: 420px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .login-card h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #006644;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+  }
+
+  .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.15rem rgba(40, 167, 69, 0.25);
+    outline: none;
+  }
+
+  .btn-login {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+
+  .text-danger {
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .link-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .link-buttons a {
+    text-decoration: none;
+    color: #28a745;
+    font-weight: 500;
+  }
+
+  .link-buttons a:hover {
+    color: #1e7e34;
+  }
+
+  .register-links {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .register-links p {
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  .register-links a {
+    display: inline-block;
+    margin: 6px;
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .btn-outline-primary {
+    color: #007bff;
+    border-color: #007bff;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+  }
+</style>
+
+<div class="login-card">
+  <h2>Connexion</h2>
+
+  <form method="POST" action="{{ url_for('auth.login') }}">
+    {{ form.hidden_tag() }}
+
+    <label for="email" class="form-label">{{ form.email.label.text }}</label>
+    {{ form.email(class="form-control", placeholder="Votre adresse email") }}
+    {% if form.email.errors %}
+      <div class="text-danger">{{ form.email.errors[0] }}</div>
+    {% endif %}
+
+    <label for="password" class="form-label">{{ form.password.label.text }}</label>
+    {{ form.password(class="form-control", placeholder="Votre mot de passe") }}
+    {% if form.password.errors %}
+      <div class="text-danger">{{ form.password.errors[0] }}</div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-success btn-login">Se connecter</button>
+
+    <div class="link-buttons">
+      <a href="{{ url_for('auth.forgot_password') }}">Mot de passe oublié ?</a>
+      <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
+    </div>
+  </form>
+
+  <div class="register-links">
+    <p>Pas encore de compte ?</p>
+    <a href="{{ url_for('auth.register_worker') }}" class="btn-outline-primary">S’inscrire comme Prestataire</a>
+    <a href="{{ url_for('auth.register_requester') }}" class="btn-outline-secondary">S’inscrire comme Demandeur</a>
+  </div>
+</div>
+{% endblock %}

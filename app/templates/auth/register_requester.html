@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}Inscription Client{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #fffbe6;
+  }
+
+  .register-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+    border: 1px solid #ffef99;
+  }
+
+  h2 {
+    color: #d4a100;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .form-control, .form-select {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    border: 1px solid #ccc;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #f0c000;
+    box-shadow: 0 0 0 0.15rem rgba(255, 200, 0, 0.25);
+  }
+
+  .btn-submit {
+    background-color: #ffc107;
+    color: black;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    padding: 0.9rem;
+    width: 100%;
+    border: none;
+  }
+
+  .btn-submit:hover {
+    background-color: #e0a800;
+  }
+
+  .form-row {
+    margin-bottom: 1.5rem;
+  }
+
+  .text-danger {
+    font-size: 0.9rem;
+  }
+
+  .links {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+</style>
+
+<div class="register-card">
+  <h2>Inscription comme Demandeur</h2>
+
+  <form method="POST" action="{{ url_for('auth.register_requester') }}">
+    {{ user_cred_form.hidden_tag() }}
+    {{ requester_form.hidden_tag() }}
+
+    <div class="row">
+      <div class="col-md-6 form-row">
+        {{ user_cred_form.username.label }}
+        {{ user_cred_form.username(class="form-control") }}
+        {% for err in user_cred_form.username.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6 form-row">
+        {{ user_cred_form.email.label }}
+        {{ user_cred_form.email(class="form-control") }}
+        {% for err in user_cred_form.email.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6 form-row">
+        {{ user_cred_form.password.label }}
+        {{ user_cred_form.password(class="form-control") }}
+        {% for err in user_cred_form.password.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6 form-row">
+        {{ user_cred_form.confirm_password.label }}
+        {{ user_cred_form.confirm_password(class="form-control") }}
+        {% for err in user_cred_form.confirm_password.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ requester_form.first_name.label }}
+        {{ requester_form.first_name(class="form-control") }}
+        {% for err in requester_form.first_name.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6 form-row">
+        {{ requester_form.last_name.label }}
+        {{ requester_form.last_name(class="form-control") }}
+        {% for err in requester_form.last_name.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ requester_form.phone.label }}
+        {{ requester_form.phone(class="form-control") }}
+        {% for err in requester_form.phone.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ requester_form.source.label }}
+        {{ requester_form.source(class="form-select") }}
+        {% for err in requester_form.source.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 form-row">
+        {{ requester_form.regular_services.label }}
+        {{ requester_form.regular_services(class="form-select", multiple=True) }}
+        {% for err in requester_form.regular_services.errors %}
+          <div class="text-danger">{{ err }}</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn-submit">S’inscrire</button>
+    </div>
+  </form>
+
+  <div class="links mt-4">
+    <p>Déjà inscrit ? <a href="{{ url_for('auth.login') }}">Se connecter</a></p>
+    <p>Vous êtes prestataire ? <a href="{{ url_for('auth.register_worker') }}">Inscription Prestataire</a></p>
+  </div>
+</div>
+{% endblock %}
