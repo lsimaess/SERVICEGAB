@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Types de service{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  .card-wrapper {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .table td, .table th {
+    vertical-align: middle;
+  }
+
+  .btn i {
+    margin-right: 0.4rem;
+  }
+</style>
+
+<div class="container">
+  <div class="card-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="text-warning">Types de service</h2>
+      <a href="{{ url_for('admin.admin_service_type_add') }}" class="btn btn-warning">
+        <i class="bi bi-plus-circle"></i> Ajouter un service
+      </a>
+    </div>
+
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for service in service_types %}
+        <tr>
+          <td>{{ service.id }}</td>
+          <td>{{ service.name }}</td>
+          <td>
+            <a href="{{ url_for('admin.admin_service_type_edit', id=service.id) }}" class="btn btn-sm btn-outline-info">
+              <i class="bi bi-pencil-square"></i> Modifier
+            </a>
+            <form method="POST" action="{{ url_for('admin.admin_service_type_delete', id=service.id) }}" class="d-inline" onsubmit="return confirm('Supprimer ce service ?')">
+              <button type="submit" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i> Supprimer
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+

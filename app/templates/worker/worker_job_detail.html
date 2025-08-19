@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Détail de la Tâche{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="text-success mb-4">Détail de la Tâche</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ job.service.name }}</h5>
+            <p><strong>Client:</strong> {{ job.requester.full_name }}</p>
+            <p><strong>Date prévue:</strong> {{ job.date_needed.strftime('%d %b %Y') }}</p>
+            <p><strong>Description:</strong> {{ job.description }}</p>
+            <p>
+                <strong>Statut:</strong>
+                <span class="badge 
+                    {% if job.status == 'ASSIGNED' %}bg-info
+                    {% elif job.status == 'COMPLETED' %}bg-success
+                    {% elif job.status == 'CANCELLED' %}bg-danger
+                    {% endif %}
+                ">
+                    {{ job.status }}
+                </span>
+            </p>
+        </div>
+    </div>
+
+    {% if job.status == 'ASSIGNED' %}
+        <form method="POST" action="{{ url_for('worker.worker_complete_job', id=job.id) }}">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.rating.label(class="form-label") }}
+                {{ form.rating(class="form-select") }}
+            </div>
+            <div class="mb-3">
+                {{ form.review.label(class="form-label") }}
+                {{ form.review(class="form-control", rows=3) }}
+            </div>
+            <button type="submit" class="btn btn-success">Marquer comme terminé</button>
+        </form>
+    {% endif %}
+
+    <a href="{{ url_for('worker.worker_job_list') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+</div>
+{% endblock %}

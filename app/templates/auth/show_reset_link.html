@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="mb-3">Réinitialisation du mot de passe</h3>
+    <p>Voici le lien pour réinitialiser le mot de passe :</p>
+    <div class="alert alert-info">
+      <a href="{{ reset_link }}">{{ reset_link }}</a>
+    </div>
+    <p class="text-muted">⚠️ Ce lien expirera dans 30 minutes.</p>
+  </div>
+{% endblock %}

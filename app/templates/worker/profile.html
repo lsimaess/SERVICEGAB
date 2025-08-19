@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Mon Profil{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  body {
+    background-color: #f5fdf8;
+  }
+
+  .profile-container {
+    max-width: 960px;
+    margin: 3rem auto;
+    padding: 2.5rem 2rem;
+    background-color: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(25, 135, 84, 0.08);
+    border: 1px solid #c8ead3;
+  }
+
+  .profile-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .profile-header h2 {
+    color: #198754;
+    font-weight: 700;
+    font-size: 2.2rem;
+  }
+
+  .profile-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    flex-wrap: wrap;
+  }
+
+  .profile-label {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .profile-value {
+    color: #222;
+  }
+
+  .profile-actions {
+    text-align: center;
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-green {
+    background-color: #198754;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-green:hover {
+    background-color: #146c43;
+  }
+
+  .btn-outline-green {
+    border: 2px solid #198754;
+    color: #198754;
+    background-color: transparent;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-green:hover {
+    background-color: #198754;
+    color: white;
+  }
+
+  @media (max-width: 768px) {
+    .profile-row {
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .profile-actions {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<div class="profile-container">
+  <div class="profile-header">
+    <h2>Mon Profil</h2>
+  </div>
+
+  <div class="profile-row"><span class="profile-label">Nom:</span><span class="profile-value">{{ worker.first_name }} {{ worker.last_name }}</span></div>
+  <div class="profile-row"><span class="profile-label">Email:</span><span class="profile-value">{{ worker.user.email }}</span></div>
+  <div class="profile-row"><span class="profile-label">Téléphone:</span><span class="profile-value">{{ worker.phone }}</span></div>
+  <div class="profile-row"><span class="profile-label">Ville:</span><span class="profile-value">{{ worker.city }}</span></div>
+  <div class="profile-row"><span class="profile-label">Zone / Quartier:</span><span class="profile-value">{{ worker.zone }}</span></div>
+  <div class="profile-row"><span class="profile-label">Travail principal:</span><span class="profile-value">{{ worker.job_primary.name }}</span></div>
+  <div class="profile-row"><span class="profile-label">Travail secondaire:</span><span class="profile-value">{{ worker.job_secondary.name if worker.job_secondary else '—' }}</span></div>
+  <div class="profile-row"><span class="profile-label">Bio:</span><span class="profile-value">{{ worker.bio }}</span></div>
+
+  <div class="profile-actions">
+    <a href="{{ url_for('worker.worker_edit_profile') }}" class="btn-outline-green">
+      <i class="bi bi-pencil"></i> Modifier
+    </a>
+    <a href="{{ url_for('worker.dashboard') }}" class="btn-green">
+      <i class="bi bi-arrow-left-circle"></i> Retour au tableau de bord
+    </a>
+  </div>
+</div>
+{% endblock %}

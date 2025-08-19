@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}{{ title or "Formulaire de Tâche" }}{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  .form-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .form-card h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+  }
+
+  .btn {
+    padding: 0.6rem 1.3rem;
+    font-weight: 600;
+  }
+</style>
+
+<div class="container">
+  <div class="form-card mx-auto" style="max-width: 720px;">
+    <h2>{{ title or "Formulaire de Tâche" }}</h2>
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <!-- Demandeur -->
+      <div class="mb-3">
+        {{ form.requester_id.label(class="form-label") }}
+        {{ form.requester_id(class="form-select") }}
+      </div>
+
+      <!-- Service demandé -->
+      <div class="mb-3">
+        {{ form.service_needed_id.label(class="form-label") }}
+        {{ form.service_needed_id(class="form-select") }}
+      </div>
+
+      <!-- Description -->
+      <div class="mb-3">
+        {{ form.description.label(class="form-label") }}
+        {{ form.description(class="form-control", rows=3) }}
+      </div>
+
+      <!-- Montant à payer -->
+      <div class="mb-3">
+        {{ form.payment_amount.label(class="form-label") }}
+        {{ form.payment_amount(class="form-control", placeholder="ex: 10 000") }}
+        <div class="form-text">Montant à payer (en FCFA)</div>
+      </div>
+
+      <!-- Date et heure -->
+      <div class="mb-3">
+        {{ form.date_needed.label(class="form-label") }}
+        {{ form.date_needed(class="form-control", type="datetime-local") }}
+      </div>
+
+      <!-- Zone -->
+      <div class="mb-3">
+        {{ form.zone.label(class="form-label") }}
+        {{ form.zone(class="form-select") }}
+      </div>
+
+      <!-- Tâche récurrente -->
+      <div class="mb-3 form-check">
+        {{ form.repeated(class="form-check-input") }}
+        {{ form.repeated.label(class="form-check-label") }}
+      </div>
+
+      {% if form.repeated.data %}
+      <div class="mb-3">
+        {{ form.recurrence_pattern.label(class="form-label") }}
+        {{ form.recurrence_pattern(class="form-select") }}
+      </div>
+      {% endif %}
+
+      {% if job and job.repeated %}
+      <div class="form-check mb-3">
+        <input type="checkbox" name="apply_to_children" class="form-check-input" id="applyToChildren">
+        <label for="applyToChildren" class="form-check-label">Appliquer aux tâches récurrentes existantes</label>
+      </div>
+      {% endif %}
+
+      <!-- Filter Button -->
+      <div class="mb-3">
+        <button type="submit" name="filter_workers" value="1" class="btn btn-outline-secondary">
+          <i class="bi bi-funnel"></i> Filtrer les travailleurs
+        </button>
+      </div>
+
+      <!-- Travailleur assigné -->
+      <div class="mb-3">
+        {{ form.worker_id.label(class="form-label") }}
+        {{ form.worker_id(class="form-select") }}
+        <small class="text-muted d-block mt-1">Travailleurs disponibles selon les filtres</small>
+      </div>
+
+      <!-- Submit & Back -->
+      <div class="d-flex justify-content-between mt-4">
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-save"></i> Enregistrer
+        </button>
+        <a href="{{ url_for('admin.admin_job_list') }}" class="btn btn-secondary">
+          <i class="bi bi-arrow-left-circle"></i> Retour
+        </a>
+      </div>
+    </form>
+
+    <!-- 🔴 Delete Button for eligible jobs -->
+    {% if job and job.status not in ['COMPLETED', 'CANCELLED'] %}
+      <form method="POST" action="{{ url_for('admin.admin_job_delete', id=job.id) }}" class="mt-4" onsubmit="return confirm('Supprimer cette tâche ?');">
+        <button class="btn btn-danger w-100">
+          <i class="bi bi-trash"></i> Supprimer cette tâche
+        </button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

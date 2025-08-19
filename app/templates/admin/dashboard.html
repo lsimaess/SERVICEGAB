@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  .admin-layout {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+  }
+
+  .admin-sidebar {
+    width: 260px;
+    background-color: #002d40;
+    color: white;
+    padding: 2rem 1rem;
+    border-radius: 12px;
+    height: fit-content;
+  }
+
+  .admin-sidebar h4 {
+    font-weight: bold;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+  }
+
+  .admin-sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .admin-sidebar a:hover,
+  .admin-sidebar a.active {
+    background-color: #005069;
+  }
+
+  .dashboard-content {
+    flex-grow: 1;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.03);
+    min-width: 0;
+  }
+
+  .dashboard-heading {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem;
+    color: #444;
+  }
+
+  .metrics-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .metric-card {
+    background: #f9fafc;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: 0.2s;
+  }
+
+  .metric-card:hover {
+    transform: scale(1.02);
+  }
+
+  .metric-card h6 {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-card .count {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .button-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .dashboard-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: 0.2s ease-in-out;
+    text-align: center;
+  }
+
+  .dashboard-btn i {
+    margin-right: 0.6rem;
+    font-size: 1.3rem;
+  }
+
+  .btn-worker { background: #00c17c; }
+  .btn-worker:hover { background: #00a76a; }
+
+  .btn-requester { background: #f0c000; color: #111; }
+  .btn-requester:hover { background: #d4a100; }
+
+  .btn-job { background: #3385ff; }
+  .btn-job:hover { background: #1a6ce0; }
+
+  .btn-service { background: #6c757d; }
+  .btn-service:hover { background: #5a6268; }
+
+  .btn-view-service { background: #adb5bd; }
+  .btn-view-service:hover { background: #919ca6; }
+
+  @media (max-width: 768px) {
+    .admin-layout {
+      flex-direction: column;
+    }
+
+    .admin-sidebar {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="admin-layout">
+  <!-- ✅ Sidebar -->
+  <div class="admin-sidebar">
+    <h4>Navigation</h4>
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="active">
+      <i class="bi bi-speedometer2"></i> Tableau de bord
+    </a>
+    <a href="{{ url_for('admin.admin_worker_list') }}">
+      <i class="bi bi-person-badge"></i> Travailleurs
+    </a>
+    <a href="{{ url_for('admin.admin_requester_list') }}">
+      <i class="bi bi-people"></i> Clients
+    </a>
+    <a href="{{ url_for('admin.admin_job_list') }}">
+      <i class="bi bi-list-task"></i> Tâches
+    </a>
+    <a href="{{ url_for('admin.admin_service_type_list') }}">
+      <i class="bi bi-list-ul"></i> Voir Services
+    </a>
+    <a href="{{ url_for('admin.admin_service_type_add') }}">
+      <i class="bi bi-plus-circle"></i> Ajouter Service
+    </a>
+    <a href="{{ url_for('auth.logout') }}">
+      <i class="bi bi-box-arrow-right"></i> Déconnexion
+    </a>
+  </div>
+
+  <!-- ✅ Dashboard Content -->
+  <div class="dashboard-content">
+    <h2 class="dashboard-heading">Tableau de bord Administrateur</h2>
+
+    <div class="section-title">Statistiques</div>
+    <div class="metrics-box">
+      <div class="metric-card">
+        <h6>Travailleurs approuvés</h6>
+        <div class="count">{{ worker_count }}</div>
+      </div>
+      <div class="metric-card">
+        <h6>Travailleurs en attente</h6>
+        <div class="count">{{ pending_worker_count }}</div>
+      </div>
+      <div class="metric-card">
+        <h6>Clients approuvés</h6>
+        <div class="count">{{ requester_count }}</div>
+      </div>
+      <div class="metric-card">
+        <h6>Clients en attente</h6>
+        <div class="count">{{ pending_requester_count }}</div>
+      </div>
+      <div class="metric-card">
+        <h6>Tâches assignées</h6>
+        <div class="count">{{ assigned_job_count }}</div>
+      </div>
+      <div class="metric-card">
+        <h6>Tâches en attente</h6>
+        <div class="count">{{ pending_job_count }}</div>
+      </div>
+    </div>
+
+    <div class="section-title">Accès rapide</div>
+    <div class="button-panel">
+      <a href="{{ url_for('admin.admin_worker_list') }}" class="dashboard-btn btn-worker">
+        <i class="bi bi-person-check"></i> Voir les Travailleurs
+      </a>
+      <a href="{{ url_for('admin.admin_requester_list') }}" class="dashboard-btn btn-requester">
+        <i class="bi bi-people"></i> Voir les Clients
+      </a>
+      <a href="{{ url_for('admin.admin_job_list') }}" class="dashboard-btn btn-job">
+        <i class="bi bi-list-task"></i> Voir les Tâches
+      </a>
+      <a href="{{ url_for('admin.admin_service_type_add') }}" class="dashboard-btn btn-service">
+        <i class="bi bi-plus-circle"></i> Ajouter un Service
+      </a>
+      <a href="{{ url_for('admin.admin_service_type_list') }}" class="dashboard-btn btn-view-service">
+        <i class="bi bi-list-ul"></i> Voir tous les Services
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

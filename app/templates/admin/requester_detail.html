@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Modifier le demandeur{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  .form-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .form-card h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #f0c000;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+  }
+
+  .btn {
+    padding: 0.65rem 1.3rem;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+</style>
+
+<div class="container">
+  <div class="form-card mx-auto" style="max-width: 720px;">
+    <h2>Modifier le profil du demandeur</h2>
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <div class="mb-3">
+        {{ form.first_name.label(class="form-label") }}
+        {{ form.first_name(class="form-control") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.last_name.label(class="form-label") }}
+        {{ form.last_name(class="form-control") }}
+      </div>
+
+      <div class="mb-3">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-control") }}
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-4">
+          {{ form.country_code.label(class="form-label") }}
+          {{ form.country_code(class="form-select") }}
+        </div>
+        <div class="col-md-8">
+          {{ form.phone_number.label(class="form-label") }}
+          {{ form.phone_number(class="form-control") }}
+        </div>
+      </div>
+
+      <div class="mb-3">
+        {{ form.source.label(class="form-label") }}
+        {{ form.source(class="form-select") }}
+      </div>
+
+      {% if form.regular_services %}
+      <div class="mb-3">
+        {{ form.regular_services.label(class="form-label") }}
+        {{ form.regular_services(class="form-select", multiple=True) }}
+        <div class="form-text">Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs.</div>
+      </div>
+      {% endif %}
+
+      <div class="d-flex justify-content-between mt-4">
+        <button type="submit" class="btn btn-warning">
+          <i class="bi bi-check-circle"></i> Mettre à jour
+        </button>
+        <a href="{{ url_for('admin.admin_requester_list') }}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left-circle"></i> Retour
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

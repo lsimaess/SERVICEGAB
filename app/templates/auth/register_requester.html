@@ -17,11 +17,10 @@
     border: 1px solid #ffef99;
   }
 
-  h2 {
+  h2, h4 {
     color: #d4a100;
     font-weight: 700;
-    text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   label {
@@ -70,93 +69,169 @@
     text-align: center;
     margin-top: 1.5rem;
   }
+
+  .form-check-group {
+    background-color: #fffdf0;
+    padding: 1rem;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .form-check {
+    min-width: 140px;
+  }
+
+  .form-check-label {
+    margin-left: 0.3rem;
+  }
+
+  .required-label::after {
+    content: " *";
+    color: red;
+  }
 </style>
 
 <div class="register-card">
   <h2>Inscription comme Demandeur</h2>
 
-  <form method="POST" action="{{ url_for('auth.register_requester') }}">
-    {{ user_cred_form.hidden_tag() }}
-    {{ requester_form.hidden_tag() }}
-
-    <div class="row">
-      <div class="col-md-6 form-row">
-        {{ user_cred_form.username.label }}
-        {{ user_cred_form.username(class="form-control") }}
-        {% for err in user_cred_form.username.errors %}
-          <div class="text-danger">{{ err }}</div>
-        {% endfor %}
-      </div>
-      <div class="col-md-6 form-row">
-        {{ user_cred_form.email.label }}
-        {{ user_cred_form.email(class="form-control") }}
-        {% for err in user_cred_form.email.errors %}
-          <div class="text-danger">{{ err }}</div>
-        {% endfor %}
-      </div>
-      <div class="col-md-6 form-row">
-        {{ user_cred_form.password.label }}
-        {{ user_cred_form.password(class="form-control") }}
-        {% for err in user_cred_form.password.errors %}
-          <div class="text-danger">{{ err }}</div>
-        {% endfor %}
-      </div>
-      <div class="col-md-6 form-row">
-        {{ user_cred_form.confirm_password.label }}
-        {{ user_cred_form.confirm_password(class="form-control") }}
-        {% for err in user_cred_form.confirm_password.errors %}
-          <div class="text-danger">{{ err }}</div>
-        {% endfor %}
-      </div>
-
-      <div class="col-md-6 form-row">
-        {{ requester_form.first_name.label }}
-        {{ requester_form.first_name(class="form-control") }}
-        {% for err in requester_form.first_name.errors %}
-          <div class="text-danger">{{ err }}</div>
-        {% endfor %}
-      </div>
-      <div class="col-md-6 form-row">
-        {{ requester_form.last_name.label }}
-        {{ requester_form.last_name(class="form-control") }}
-        {% for err in requester_form.last_name.errors %}
-          <div class="text-danger">{{ err }}</div>
-        {% endfor %}
-      </div>
-
-      <div class="col-md-6 form-row">
-        {{ requester_form.phone.label }}
-        {{ requester_form.phone(class="form-control") }}
-        {% for err in requester_form.phone.errors %}
-          <div class="text-danger">{{ err }}</div>
-        {% endfor %}
-      </div>
-
-      <div class="col-md-6 form-row">
-        {{ requester_form.source.label }}
-        {{ requester_form.source(class="form-select") }}
-        {% for err in requester_form.source.errors %}
-          <div class="text-danger">{{ err }}</div>
-        {% endfor %}
-      </div>
-
-      <div class="col-12 form-row">
-        {{ requester_form.regular_services.label }}
-        {{ requester_form.regular_services(class="form-select", multiple=True) }}
-        {% for err in requester_form.regular_services.errors %}
-          <div class="text-danger">{{ err }}</div>
-        {% endfor %}
-      </div>
+  {% if registration_success %}
+    <div class="alert alert-success">
+      ✅ Compte client créé avec succès. <a href="{{ url_for('auth.login') }}">Connectez-vous ici</a>.
     </div>
+  {% else %}
+    {% if user_cred_form.errors or requester_form.errors %}
+      <div class="alert alert-danger">Veuillez corriger les erreurs dans le formulaire ci-dessous.</div>
+    {% endif %}
 
-    <div class="mt-4">
-      <button type="submit" class="btn-submit">S’inscrire</button>
-    </div>
-  </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('auth.register_requester') }}">
+      {{ user_cred_form.hidden_tag() }}
+      {{ requester_form.hidden_tag() }}
+
+      <div class="row">
+        <h4>Informations de Connexion</h4>
+
+        <div class="col-md-6 form-row">
+          {{ user_cred_form.username.label(class="required-label") }}
+          {{ user_cred_form.username(class="form-control") }}
+          {% for err in user_cred_form.username.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-6 form-row">
+          {{ user_cred_form.email.label }}
+          {{ user_cred_form.email(class="form-control", autocomplete="off") }}
+          <small class="text-muted">Utile pour réinitialiser votre mot de passe</small>
+          {% for err in user_cred_form.email.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-6 form-row">
+          {{ user_cred_form.password.label(class="required-label") }}
+          {{ user_cred_form.password(class="form-control") }}
+          {% for err in user_cred_form.password.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-6 form-row">
+          {{ user_cred_form.confirm_password.label(class="required-label") }}
+          {{ user_cred_form.confirm_password(class="form-control") }}
+          {% for err in user_cred_form.confirm_password.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-6 form-row">
+          {{ user_cred_form.dob.label(class="required-label") }}
+          {{ user_cred_form.dob(class="form-control", placeholder="YYYY-MM-DD") }}
+          {% for err in user_cred_form.dob.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <h4 class="mt-4">Informations Personnelles</h4>
+
+        <div class="col-md-6 form-row">
+          {{ requester_form.first_name.label(class="required-label") }}
+          {{ requester_form.first_name(class="form-control") }}
+          {% for err in requester_form.first_name.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-6 form-row">
+          {{ requester_form.last_name.label(class="required-label") }}
+          {{ requester_form.last_name(class="form-control") }}
+          {% for err in requester_form.last_name.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-3 form-row">
+          {{ requester_form.country_code.label(class="required-label") }}
+          {{ requester_form.country_code(class="form-select") }}
+          {% for err in requester_form.country_code.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-3 form-row">
+          {{ requester_form.phone_number.label(class="required-label") }}
+          {{ requester_form.phone_number(class="form-control") }}
+          {% for err in requester_form.phone_number.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-6 form-row">
+          {{ requester_form.source.label(class="required-label") }}
+          {{ requester_form.source(class="form-select") }}
+          {% for err in requester_form.source.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-12 form-row">
+          {{ requester_form.regular_services.label }}
+          <div class="form-check-group">
+            {% for subfield in requester_form.regular_services %}
+              <div class="form-check">
+                {{ subfield(class="form-check-input") }}
+                {{ subfield.label(class="form-check-label") }}
+              </div>
+            {% endfor %}
+          </div>
+          {% for err in requester_form.regular_services.errors %}
+            <div class="text-danger">{{ err }}</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <button type="submit" class="btn-submit">S’inscrire</button>
+      </div>
+    </form>
+  {% endif %}
 
   <div class="links mt-4">
     <p>Déjà inscrit ? <a href="{{ url_for('auth.login') }}">Se connecter</a></p>
-    <p>Vous êtes prestataire ? <a href="{{ url_for('auth.register_worker') }}">Inscription Prestataire</a></p>
+    <p>Vous êtes un Travailleur ? <a href="{{ url_for('auth.register_worker') }}">Inscription Travailleur</a></p>
   </div>
 </div>
 {% endblock %}

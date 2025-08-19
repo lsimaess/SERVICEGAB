@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Demandeurs{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  .card-wrapper {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .btn i {
+    margin-right: 0.4rem;
+  }
+
+  .table td, .table th {
+    vertical-align: middle;
+  }
+
+  .badge {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  .bottom-return {
+    margin-top: 3rem;
+    text-align: center;
+  }
+</style>
+
+<div class="container">
+  <div class="card-wrapper">
+    <h2 class="mb-4 text-warning">Liste des demandeurs</h2>
+
+    <!-- Filter -->
+    <form method="GET" class="row g-3 mb-3">
+      <div class="col-md-3">
+        <select name="status" class="form-select">
+          <option value="">Tous les statuts</option>
+          <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>En attente</option>
+          <option value="approved" {% if request.args.get('status') == 'approved' %}selected{% endif %}>Approuvé</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-outline-warning">
+          <i class="bi bi-funnel"></i> Filtrer
+        </button>
+      </div>
+    </form>
+
+    <!-- Bulk Approve -->
+    <form method="POST" action="{{ url_for('admin.admin_requester_approve_bulk') }}">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th><input type="checkbox" id="checkAll"></th>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Téléphone</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for requester in requesters %}
+            <tr>
+              <td><input type="checkbox" name="selected_ids" value="{{ requester.id }}"></td>
+              <td>{{ requester.full_name }}</td>
+              <td>{{ requester.email or '—' }}</td>
+              <td>{{ requester.phone_number or '—' }}</td>
+              <td>
+                <span class="badge bg-{{ 'secondary' if requester.status == 'En attente' else 'success' }}">
+                  {{ requester.status }}
+                </span>
+              </td>
+              <td class="text-nowrap">
+                <a href="{{ url_for('admin.admin_requester_detail', id=requester.id) }}" class="btn btn-sm btn-info">
+                  <i class="bi bi-eye"></i> Voir
+                </a>
+                <form method="POST" action="{{ url_for('admin.admin_requester_delete', id=requester.id) }}" class="d-inline" onsubmit="return confirm('Supprimer ce demandeur ?')">
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="bi bi-trash"></i> Supprimer
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center text-muted">Aucun demandeur trouvé.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <button type="submit" class="btn btn-success mt-3">
+        <i class="bi bi-person-check"></i> Approuver la sélection
+      </button>
+    </form>
+  </div>
+
+  <!-- Retour au dashboard -->
+  <div class="bottom-return">
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-outline-warning btn-lg">
+      <i class="bi bi-arrow-left-circle"></i> Retour au tableau de bord
+    </a>
+  </div>
+</div>
+
+<script>
+document.getElementById('checkAll')?.addEventListener('click', function(e) {
+  document.querySelectorAll('input[name="selected_ids"]').forEach(cb => cb.checked = e.target.checked);
+});
+</script>
+{% endblock %}

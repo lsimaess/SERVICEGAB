@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}Mes Tâches{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  body {
+    background-color: #f5fdf8;
+  }
+
+  .task-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .task-heading {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #198754;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .filter-bar {
+    background-color: #ffffff;
+    border: 1px solid #cbe6d3;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 6px 16px rgba(25, 135, 84, 0.06);
+  }
+
+  .filter-bar .form-label {
+    font-size: 0.95rem;
+    color: #444;
+    font-weight: 600;
+  }
+
+  .filter-bar .form-select,
+  .filter-bar .form-control {
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+  }
+
+  .filter-bar .btn-apply {
+    background-color: #198754;
+    color: white;
+    font-weight: 600;
+    font-size: 1.05rem;
+    padding: 0.75rem;
+    border-radius: 10px;
+    border: none;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .filter-bar .btn-apply:hover {
+    background-color: #157347;
+  }
+
+  .table th, .table td {
+    vertical-align: middle;
+  }
+
+  .badge {
+    font-size: 0.85rem;
+  }
+
+  .btn-view {
+    font-weight: 500;
+    padding: 0.45rem 0.75rem;
+  }
+
+  .no-tasks {
+    text-align: center;
+    padding: 2rem;
+    font-style: italic;
+    color: #6c757d;
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 600;
+    margin-top: 2.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    color: #198754;
+    border: 2px solid #198754;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-back i {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+  }
+
+  .btn-back:hover {
+    background-color: #198754;
+    color: white;
+  }
+
+  @media (max-width: 576px) {
+    .filter-bar .form-label {
+      margin-top: 0.5rem;
+    }
+  }
+</style>
+
+<div class="task-wrapper">
+  <h2 class="task-heading">Mes Tâches</h2>
+
+  <!-- Filter Bar -->
+  <form method="GET" class="filter-bar">
+    <div class="row g-3">
+      <div class="col-md-4 col-12">
+        <label for="status" class="form-label">Statut</label>
+        <select name="status" id="status" class="form-select">
+          <option value="">Tous</option>
+          <option value="ASSIGNED" {% if request.args.get('status') == 'ASSIGNED' %}selected{% endif %}>Assignées</option>
+          <option value="COMPLETED" {% if request.args.get('status') == 'COMPLETED' %}selected{% endif %}>Complétées</option>
+          <option value="CANCELLED" {% if request.args.get('status') == 'CANCELLED' %}selected{% endif %}>Annulées</option>
+        </select>
+      </div>
+
+      <div class="col-md-4 col-12">
+        <label for="date" class="form-label">Date (à partir de)</label>
+        <input type="date" name="date" id="date" class="form-control" value="{{ request.args.get('date', '') }}">
+      </div>
+
+      <div class="col-md-4 col-12 d-grid align-self-end">
+        <button type="submit" class="btn btn-apply">
+          <i class="bi bi-funnel-fill"></i> Appliquer les filtres
+        </button>
+      </div>
+    </div>
+  </form>
+
+  {% if jobs %}
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle shadow-sm">
+        <thead class="table-light">
+          <tr>
+            <th>Service</th>
+            <th>Client</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for job in jobs %}
+          <tr>
+            <td>{{ job.service.name }}</td>
+            <td>{{ job.requester.full_name }}</td>
+            <td>{{ job.date_needed.strftime('%d %b %Y') }}</td>
+            <td>
+              <span class="badge 
+                {% if job.status == 'ASSIGNED' %}bg-info
+                {% elif job.status == 'COMPLETED' %}bg-success
+                {% elif job.status == 'CANCELLED' %}bg-danger
+                {% else %}bg-secondary
+                {% endif %}">
+                {{ job.status }}
+              </span>
+            </td>
+            <td>
+              <a href="{{ url_for('worker.worker_job_detail', id=job.id) }}" class="btn btn-sm btn-outline-success btn-view">
+                <i class="bi bi-eye"></i> Voir
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="no-tasks">
+      <p>Aucune tâche assignée.</p>
+    </div>
+  {% endif %}
+
+  <!-- Back to dashboard -->
+  <a href="{{ url_for('worker.dashboard') }}" class="btn-back">
+    <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+  </a>
+</div>
+{% endblock %}

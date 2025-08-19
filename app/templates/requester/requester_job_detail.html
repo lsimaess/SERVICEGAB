@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Détail de la Demande{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="text-warning mb-3">Détail de la Demande</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ job.service.name }}</h5>
+            <p class="card-text"><strong>Description :</strong> {{ job.description }}</p>
+            <p class="card-text"><strong>Date prévue :</strong> {{ job.date_needed.strftime('%d %B %Y') }}</p>
+            <p class="card-text"><strong>Adresse :</strong> {{ job.address }}</p>
+            <p class="card-text"><strong>Fréquence :</strong> {{ job.recurrence or "Non récurrente" }}</p>
+            <p class="card-text"><strong>Statut :</strong>
+                <span class="badge 
+                    {% if job.status == 'PENDING' %}bg-secondary
+                    {% elif job.status == 'ASSIGNED' %}bg-info
+                    {% elif job.status == 'COMPLETED' %}bg-success
+                    {% elif job.status == 'CANCELLED' %}bg-danger
+                    {% endif %}
+                ">
+                    {{ job.status }}
+                </span>
+            </p>
+            {% if job.review %}
+            <hr>
+            <p><strong>Note :</strong> {{ job.review.rating }} / 5</p>
+            <p><strong>Avis :</strong> {{ job.review.text }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <a href="{{ url_for('requester.requester_dashboard') }}" class="btn btn-secondary">Retour</a>
+</div>
+{% endblock %}

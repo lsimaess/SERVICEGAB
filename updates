@@ -1,0 +1,33 @@
+#!/bin/bash
+
+ROUTES_FILE="app/auth/routes.py"
+
+# Check if 'auth_bp' is defined
+if ! grep -q "^auth_bp = Blueprint" "$ROUTES_FILE"; then
+  echo "Adding missing imports and auth_bp Blueprint definition..."
+
+  # Create a temp file with the imports and blueprint definition
+  TMPFILE=$(mktemp)
+
+  cat << 'EOF' > "$TMPFILE"
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from werkzeug.security import generate_password_hash
+from app import db
+from app.models import User, Worker, Requester, ServiceType
+from app.forms import UserCredentialForm, WorkerForm, RequesterForm
+
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+EOF
+
+  # Append the original routes.py content after these lines (skipping duplicates)
+  # Remove any existing conflicting imports or blueprint definitions to avoid duplication
+  sed '/from flask import Blueprint/d;/auth_bp = Blueprint/d' "$ROUTES_FILE" >> "$TMPFILE"
+
+  # Replace the original file with the updated one
+  mv "$TMPFILE" "$ROUTES_FILE"
+
+  echo "Imports and auth_bp definition added successfully."
+else
+  echo "auth_bp blueprint already defined. No changes made."
+fi

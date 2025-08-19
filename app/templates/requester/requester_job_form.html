@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ title or "Demande de Service" }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="text-warning mb-4">{{ title or "Demande de Service" }}</h2>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.service_needed_id.label(class="form-label") }}
+            {{ form.service_needed_id(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows="3") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.date_needed.label(class="form-label") }}
+            {{ form.date_needed(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.recurrence.label(class="form-label") }}
+            {{ form.recurrence(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.address.label(class="form-label") }}
+            {{ form.address(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.notes.label(class="form-label") }}
+            {{ form.notes(class="form-control", rows="2") }}
+        </div>
+
+        <button type="submit" class="btn btn-warning">Soumettre</button>
+        <a href="{{ url_for('requester.requester_dashboard') }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}

@@ -7,44 +7,64 @@ from flask_mail import Mail
 from flask_login import LoginManager
 from dotenv import load_dotenv
 
-load_dotenv()  # ✅ Load env vars
+load_dotenv()
 
 db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()
-login_manager = LoginManager()  # ✅ Add this line
+login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('../config.py')
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fallback-secret-key')
+    app.debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
 
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     Bootstrap(app)
     mail.init_app(app)
-    login_manager.init_app(app)  # ✅ Set up login manager
-    login_manager.login_view = 'auth.login'  # Redirect to login if @login_required
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
+    login_manager.login_message_category = "warning"
 
-    # Import models and register user loader
+    # User loader
     from app.models import User
-
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    # Import blueprints
+    # Register Blueprints
     from app.admin.routes import admin_bp
     from app.worker.routes import worker_bp
+    
+
+
+    # ✅ Register custom Jinja filter for FCFA formatting
+    @app.template_filter()
+    def format_fcfa(value):
+        if value is None:
+            return "-"
+        return f"{value:,.0f} FCFA".replace(",", " ")
+
+    app.jinja_env.filters['format_fcfa'] = format_fcfa
     from app.requester.routes import requester_bp
     from app.main.routes import main_bp
     from app.auth.routes import auth_bp
 
-    # Register blueprints
     app.register_blueprint(admin_bp)
     app.register_blueprint(worker_bp)
     app.register_blueprint(requester_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
+
+    # ✅ Clean context processor for template use
+    @app.context_processor
+    def inject_globals():
+        return dict(signup_enabled='auth.signup' in app.view_functions)
+
+    
+
 
     return app

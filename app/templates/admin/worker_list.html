@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block title %}Travailleurs{% endblock %}
+{% block titlebar %}Liste des Travailleurs{% endblock %}
+
+{% block content %}
+<style>
+  .section-admin {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    margin-bottom: 3rem;
+  }
+
+  .zone-filtre {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .tableau-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    background-color: #f1f3f5;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 0.75rem;
+    border-bottom: 1px solid #dee2e6;
+    text-align: left;
+  }
+
+  tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+  }
+
+  tbody tr:hover {
+    background-color: #f9fafc;
+  }
+
+  .badge {
+    font-size: 0.85rem;
+    padding: 0.45em 0.75em;
+    border-radius: 50rem;
+  }
+
+  .boutons-actions {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: nowrap;
+  }
+
+  .btn-sm i {
+    margin-right: 0.35rem;
+  }
+
+  .btn-filtre,
+  .btn-approuver {
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .bottom-return {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .zone-filtre {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .btn-approuver {
+      width: 100%;
+    }
+    .boutons-actions {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<div class="section-admin">
+  <!-- 🔍 Filtrage -->
+  <form method="get" class="zone-filtre">
+    <div>
+      <label for="status" class="form-label">Filtrer par statut :</label>
+      <select name="status" id="status" class="form-select">
+        <option value="">Tous</option>
+        <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>En attente</option>
+        <option value="approved" {% if request.args.get('status') == 'approved' %}selected{% endif %}>Approuvé</option>
+        <option value="rejected" {% if request.args.get('status') == 'rejected' %}selected{% endif %}>Rejeté</option>
+      </select>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-outline-primary btn-filtre">
+        <i class="bi bi-filter-circle"></i> Filtrer
+      </button>
+    </div>
+  </form>
+
+  <!-- 📋 Tableau des travailleurs -->
+  <form method="post" action="{{ url_for('admin.admin_worker_approve_bulk') }}">
+    <div class="tableau-container">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="select-all"></th>
+            <th><i class="bi bi-person"></i> Nom</th>
+            <th><i class="bi bi-telephone"></i> Téléphone</th>
+            <th><i class="bi bi-envelope"></i> Email</th>
+            <th><i class="bi bi-shield-check"></i> Statut</th>
+            <th style="width: 160px;"><i class="bi bi-tools"></i> Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for worker in workers %}
+          <tr>
+            <td><input type="checkbox" name="selected_ids" value="{{ worker.id }}"></td>
+            <td>{{ worker.full_name }}</td>
+            <td>
+              {% if worker.country_code and worker.phone_number %}
+                {{ worker.country_code }} {{ worker.phone_number }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td>{{ worker.email or "-" }}</td>
+            <td>
+              <span class="badge 
+                {% if worker.status == 'pending' %} bg-warning text-dark
+                {% elif worker.status == 'approved' %} bg-success
+                {% elif worker.status == 'rejected' %} bg-danger
+                {% else %} bg-dark {% endif %}">
+                {% if worker.status == 'pending' %}
+                  En attente
+                {% elif worker.status == 'approved' %}
+                  Approuvé
+                {% elif worker.status == 'rejected' %}
+                  Rejeté
+                {% else %}
+                  {{ worker.status|capitalize }}
+                {% endif %}
+              </span>
+            </td>
+            <td>
+              <div class="boutons-actions">
+                <a href="{{ url_for('admin.admin_worker_detail', id=worker.id) }}" class="btn btn-sm btn-primary">
+                  <i class="bi bi-eye"></i> Voir
+                </a>
+                <form method="post" action="{{ url_for('admin.admin_worker_delete', id=worker.id) }}" onsubmit="return confirm('Supprimer ce travailleur ?');">
+                  <button type="submit" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-trash"></i> Supprimer
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="text-center text-muted">Aucun travailleur trouvé.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ✅ Bouton Approuver sélection -->
+    <button type="submit" class="btn btn-success mt-4 btn-approuver">
+      <i class="bi bi-person-check-fill"></i> Approuver la sélection
+    </button>
+  </form>
+</div>
+
+<!-- 🔙 Retour au tableau de bord -->
+<div class="bottom-return">
+  <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-outline-primary btn-lg">
+    <i class="bi bi-arrow-left-circle"></i> Retour au tableau de bord
+  </a>
+</div>
+
+<script>
+  document.getElementById('select-all')?.addEventListener('change', function () {
+    document.querySelectorAll('input[name="selected_ids"]').forEach(cb => cb.checked = this.checked);
+  });
+</script>
+{% endblock %}

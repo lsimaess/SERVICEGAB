@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Modifier Mon Profil{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  body {
+    background-color: #e8f5e9;
+  }
+
+  .edit-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.1);
+    border: 1px solid #c8e6c9;
+  }
+
+  h2 {
+    color: #388e3c;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .form-control,
+  .form-select {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    border: 1px solid #ccc;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 0.15rem rgba(76, 175, 80, 0.25);
+  }
+
+  textarea.form-control {
+    height: 120px;
+  }
+
+  .btn-save {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    padding: 0.9rem;
+    width: 100%;
+    border: none;
+  }
+
+  .btn-save:hover {
+    background-color: #43A047;
+  }
+
+  .btn-cancel {
+    margin-top: 1rem;
+    display: block;
+    text-align: center;
+  }
+
+  .form-row {
+    margin-bottom: 1.5rem;
+  }
+
+  .text-danger {
+    font-size: 0.9rem;
+  }
+</style>
+
+<div class="edit-card">
+  <h2>Modifier Mon Profil</h2>
+
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <div class="row">
+      <div class="col-md-6 form-row">
+        {{ form.first_name.label }}
+        {{ form.first_name(class="form-control") }}
+        {% for err in form.first_name.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ form.last_name.label }}
+        {{ form.last_name(class="form-control") }}
+        {% for err in form.last_name.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ form.phone.label }}
+        {{ form.phone(class="form-control") }}
+        {% for err in form.phone.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ form.zone.label }}
+        {{ form.zone(class="form-select") }}
+        {% for err in form.zone.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ form.city.label }}
+        {{ form.city(class="form-control") }}
+        {% for err in form.city.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ form.job_primary_id.label }}
+        {{ form.job_primary_id(class="form-select") }}
+        {% for err in form.job_primary_id.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ form.job_secondary_id.label }}
+        {{ form.job_secondary_id(class="form-select") }}
+        {% for err in form.job_secondary_id.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-12 form-row">
+        {{ form.bio.label }}
+        {{ form.bio(class="form-control") }}
+        {% for err in form.bio.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ form.profile_picture.label }}
+        {{ form.profile_picture(class="form-control") }}
+        {% for err in form.profile_picture.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-md-6 form-row">
+        {{ form.id_document.label }}
+        {{ form.id_document(class="form-control") }}
+        {% for err in form.id_document.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+
+      <div class="col-md-12 form-row">
+        {{ form.source.label }}
+        {{ form.source(class="form-select") }}
+        {% for err in form.source.errors %}<div class="text-danger">{{ err }}</div>{% endfor %}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn-save">Mettre à jour</button>
+    </div>
+
+    <div class="btn-cancel">
+      <a href="{{ url_for('worker.worker_profile') }}" class="btn btn-outline-secondary mt-3">
+        <i class="bi bi-arrow-left me-1"></i> Annuler
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}
